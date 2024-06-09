@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Formation = require('../models/formationModel');
 const jwt = require('jsonwebtoken');
 const { sendResetEmail } = require('./mailer');
 const bcrypt = require('bcrypt');
@@ -91,5 +92,52 @@ const getUserFormations = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+const enrollUserToFormation = async (req, res) => {
+  const { userId, formationId } = req.body;
 
-module.exports = { signupUser, loginUser, RequestReset, ResetPassword, getUserFormations };
+  try {
+    const user = await User.findById(userId);
+    const formation = await Formation.findById(formationId);
+
+    if (!user || !formation) {
+      return res.status(404).json({ error: 'User or Formation not found' });
+    }
+
+    if (!user.formations.includes(formationId)) {
+      user.formations.push(formationId);
+      formation.users.push(userId);
+    }
+
+    await user.save();
+    await formation.save();
+
+    res.status(200).json({ message: 'User enrolled in formation successfully', user });
+  } catch (error) {
+    console.error('Error in enrollUserToFormation:', error);
+    res.status(400).json({ error: error.message });
+  }
+};
+const unenrollUserFromFormation = async (req, res) => {
+  const { userId, formationId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const formation = await Formation.findById(formationId);
+
+    if (!user || !formation) {
+      return res.status(404).json({ error: 'User or Formation not found' });
+    }
+
+    user.formations.pull(formationId);
+    formation.users.pull(userId);
+
+    await user.save();
+    await formation.save();
+
+    res.status(200).json({ message: 'User unenrolled from formation successfully', user });
+  } catch (error) {
+    console.error('Error in unenrollUserFromFormation:', error);
+    res.status(400).json({ error: error.message });
+  }
+};
+module.exports = { signupUser, loginUser, RequestReset, ResetPassword, getUserFormations , enrollUserToFormation, unenrollUserFromFormation};

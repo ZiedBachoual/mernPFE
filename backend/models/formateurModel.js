@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
-
 const Schema = mongoose.Schema;
 
 const formateurSchema = new Schema({
@@ -35,11 +34,12 @@ const formateurSchema = new Schema({
   },
   cv: {
     data: {
-      type: Buffer, // Storing file data as Buffer
+      type: Buffer,
       
     },
-    contentType: String, // MIME type of the file
+    contentType: String,
   },
+  formations: [{ type: Schema.Types.ObjectId, ref: 'Formation' }]
 });
 
 // Static signup method
@@ -77,6 +77,7 @@ formateurSchema.statics.signup = async function (formData) {
       data: formData.cv.data,
       contentType: formData.cv.contentType,
     },
+    formations: formData.formations
   });
 
   return formateur;

@@ -1,7 +1,7 @@
 const express = require('express')
 
 // controller functions
-const { loginUser, signupUser, RequestReset, ResetPassword, getUserFormations } = require('../controllers/userController')
+const { loginUser, signupUser, RequestReset, ResetPassword, getUserFormations, enrollUserToFormation, unenrollUserFromFormation } = require('../controllers/userController')
 
 const router = express.Router()
 
@@ -16,5 +16,10 @@ router.post('/signup', signupUser)
 //Reset Pwd 
 router.post('/request-password-reset', RequestReset);
 router.post('/reset-password', ResetPassword);
+
+//enroll and uneroll user from formations
+
+router.post('/enroll', enrollUserToFormation);
+router.post('/unenroll', unenrollUserFromFormation);
 
 module.exports = router;
