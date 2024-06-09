@@ -5,11 +5,15 @@ const router = express.Router();
 
 // Import controller functions for Formateur
 const { loginFormateur, addFormateur, getAllFormateurs } = require('../controllers/formateurController');
+const fs = require("fs");
 
-
+const uploadDir = path.join(__dirname, '../uploads/cv');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/cv');
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
