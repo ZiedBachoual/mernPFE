@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Mesformations from './pages/Mesformations';
 import RequestReset from './components/RequestReset';
 import ResetPassword from './components/ResetPassword';
+import FormateurFormations from './pages/FormateurFormations';
 
 import './index.css';
 
@@ -24,7 +25,8 @@ const routes = [
   { path: "/categories", guarded: true, userType: "admin", element: <Categories /> },
   { path: "/", guarded: true, userType: "admin", element: <Home /> },
   { path: "/profile", guarded: true, userType: "admin", element: <Profile /> },
-  
+  { path: "/formateursformations/:id", guarded: true, userType: "admin", element: <FormateurFormations /> },
+
   // user
   { path: "/login", guarded: false, userType: "user", element: <Login /> },
   { path: "/signup", guarded: false, userType: "user", element: <Signup /> },

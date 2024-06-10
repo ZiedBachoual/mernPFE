@@ -3,7 +3,7 @@ import {useFormationsContext} from '../hooks/useFormationsContext';
 import {useAuthContext} from '../hooks/useAuthContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
-const FormationDetails = ({formation, isRolled}) => {
+const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const {dispatch} = useFormationsContext();
     const {user} = useAuthContext();
 
@@ -56,7 +56,7 @@ const FormationDetails = ({formation, isRolled}) => {
     };
     const unerollCourse = async (formationId) => {
         if (!user) {
-            alert('You need to be logged in to enroll in a course.');
+            alert('You need to be logged in to unenroll in a course.');
             return;
         }
 
@@ -78,6 +78,53 @@ const FormationDetails = ({formation, isRolled}) => {
             alert('Failed to unenroll in the course.');
         }
     };
+
+    const addFormateur = async (formateurId, formationId) => {
+        if (!user) {
+            alert('You need to be logged in to add in a formateur.');
+            return;
+        }
+
+        const response = await fetch('http://localhost:3000/api/formateur/addFormateurToFormation', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${user.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                formateurId: formateurId,
+                formationId: formationId
+            })
+        });
+        if (response.ok) {
+            alert('You have been add a formateur!');
+        } else {
+            alert('Failed to add formateur.');
+        }
+    };
+
+    const deleteFormateur = async (formateurId, formationId) => {
+        if (!user) {
+            alert('You need to be logged in to delete a formateur.');
+            return;
+        }
+        const response = await fetch('http://localhost:3000/api/formateur/removeFormateur', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${user.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                formateurId: formateurId,
+                formationId: formationId
+            })
+        });
+        if (response.ok) {
+            alert('You have been deleted a formateur!');
+        } else {
+            alert('Failed to delete formateur.');
+        }
+    };
     return (
         <div className="formation-card">
             <h4>{formation.title}</h4>
@@ -95,6 +142,18 @@ const FormationDetails = ({formation, isRolled}) => {
                         enrollCourse(formation._id)
                     }
                 }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
+                {user.role == 'admin' && !formateur && (<select value={formation.formateurs[0]}
+                                                                onChange={(e) => addFormateur(e.target.value, formation._id)}>
+                    <option value="">Choisir un formateur</option>
+                    {formateurs.map((formateur) => (
+                        <option key={formateur._id} value={formateur._id}>
+                            {`${formateur.firstName} ${formateur.lastName}`}
+                        </option>
+                    ))}
+                </select>)}
+                {user.role == 'admin' && formateur && (<div className="enroll-button" onClick={() => {
+                    deleteFormateur(formateur, formation._id)
+                }}>quitter</div>)}
             </div>
         </div>
     );
