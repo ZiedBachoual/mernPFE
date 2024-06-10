@@ -26,8 +26,9 @@ const seanceSchema = new Schema({
         contenu: {
             type: String,
             required: false
-        }
         },
+        formations: [{ type: Schema.Types.ObjectId, ref: 'Formation' }]
+    },
     { timestamps: true });
 
 const Seance = mongoose.model('Seance', seanceSchema);

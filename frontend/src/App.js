@@ -16,6 +16,7 @@ import RequestReset from './components/RequestReset';
 import ResetPassword from './components/ResetPassword';
 import FormateurFormations from './pages/FormateurFormations';
 import EtudiantsFormations from './pages/EtudiantsFormations';
+import ListSeances from './pages/ListSeances';
 
 import './index.css';
 
@@ -28,6 +29,7 @@ const routes = [
   { path: "/profile", guarded: true, userType: "admin", element: <Profile /> },
   { path: "/formateursformations/:id", guarded: true, userType: "admin", element: <FormateurFormations /> },
   { path: "/usersformations/:id", guarded: true, userType: "admin", element: <EtudiantsFormations /> },
+  { path: "/listseances/:id", guarded: true, userType: "admin", element: <ListSeances /> },
 
   // user
   { path: "/login", guarded: false, userType: "user", element: <Login /> },

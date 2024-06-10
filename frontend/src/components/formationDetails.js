@@ -8,9 +8,12 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const {dispatch} = useFormationsContext();
     const {user} = useAuthContext();
     const navigate = useNavigate();
-    const handleUserClick = (userId) => {
-        navigate(`/usersformations/${userId}`);
+    const handleUserClick = (formationId) => {
+        navigate(`/usersformations/${formationId}`);
     };
+    const handleSeancesClick =(formationId)=>{
+        navigate(`/listseances/${formationId}`);
+    }
     const handleClick = async () => {
         if (!user) {
             return;
@@ -146,6 +149,7 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
                         enrollCourse(formation._id)
                     }
                 }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
+                {user.role == 'admin' && (<div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les seances</div>)}
                 {user.role == 'admin' && (<div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les etudiants</div>)}
                 {user.role == 'admin' && !formateur && (<select style={{width:'95%'}} value={formation.formateurs[0]}
                                                                 onChange={(e) => addFormateur(e.target.value, formation._id)}>

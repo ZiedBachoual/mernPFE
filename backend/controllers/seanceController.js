@@ -20,7 +20,8 @@ const addSeanceToFormation = async (req, res) => {
             heureDebut,
             duree,
             lieu,
-            contenu
+            contenu,
+            formations: [formationId]
         });
         await seance.save();
         const seanceId = seance._id;
@@ -40,15 +41,19 @@ const addSeanceToFormation = async (req, res) => {
 const deleteSeance = async (req, res) => {
     const {seanceId, formationId} = req.body;
     try {
+        console.log(seanceId)
         const formation = await Formation.findById(formationId);
-        console.log("-----formationId---",formationId,'formation')
-        if (!formation) {
+        const seance = await Seance.findById(seanceId);
+        if (!formation || !seance ) {
             return res.status(404).json({error: 'formation not found'});
         }
         formation?.seances.pull(seanceId);
+        seance?.formations.pull(formationId);
         try {
             await formation.validateSync();
             await formation.save();
+            await seance.validateSync();
+            await seance.save();
         } catch (e) {
             console.log(e)
         }
