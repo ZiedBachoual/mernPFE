@@ -62,7 +62,7 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
-    res.status(200).json({ email, token, role: user.role });
+    res.status(200).json({ email, token, role: user.role,user});
   } catch (error) {
     console.error('Error in loginUser:', error);
     res.status(400).json({ error: error.message });

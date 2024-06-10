@@ -1,64 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { useAuthContext } from '../hooks/useAuthContext';
+import { useAuthContext } from "../hooks/useAuthContext";
+import FormationDetails from '../components/formationDetails';
+import FormationForm from '../components/formationForm';
 
 const Mesformations = () => {
-  const { user } = useAuthContext();
   const [formations, setFormations] = useState([]);
-  const [error, setError] = useState(null);
-console.log(user._id);
+  const { user } = useAuthContext();
+
   useEffect(() => {
     const fetchFormations = async () => {
-      if (user && user._id) {
-        console.log('Fetching formations for user:', user);
-        try {
-          const response = await fetch(`/api/user/${user._id}/formations`, {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error);
+      try {
+        const response = await fetch(`/api/formation`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
           }
-
+        });
+        if (response.ok) {
+          const data = await response.json();
           setFormations(data);
-        } catch (err) {
-          setError(err.message);
+        } else {
+          throw new Error('Failed to fetch formations');
         }
-      } else {
-        console.error('User ID is missing');
+      } catch (error) {
+        console.error(error);
       }
     };
 
     fetchFormations();
   }, [user]);
 
-  if (!user) {
-    return <p>You must be logged in to view your formations.</p>;
-  }
-
   return (
-    <div className="my-formations-page">
-      <h3>Mes Formations</h3>
-      {error && <div className="error">{error}</div>}
-      {formations.length > 0 ? (
-        <ul>
-          {formations.map((formation) => (
-            <li key={formation._id}>
-              <h4>{formation.title}</h4>
-              <p>Catégorie: {formation.categorie}</p>
-              <p>Durée: {formation.duree} heures</p>
-              <p>Date de début: {new Date(formation.datedebut).toLocaleDateString()}</p>
-              <p>Date de fin: {new Date(formation.datefin).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Vous n'êtes inscrit à aucune formation.</p>
-      )}
-    </div>
+      <div className="pages">
+        <div className="formations">
+          {formations && formations
+              .filter(formation => formation.users.includes(user?.user?._id))
+              .map((formation) => (
+                  <FormationDetails isRolled={true} key={formation._id} formation={formation} />
+              ))}
+        </div>
+        <FormationForm />
+      </div>
   );
 };
 

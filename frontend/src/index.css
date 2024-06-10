@@ -419,7 +419,8 @@ nav button {
   color: #0a0a0a;
 }
 .delete-button,
-.update-button {
+.update-button,
+.enroll-button {
   padding: 10px 20px; /* Adjust the padding as needed */
   max-width: auto;
   max-height: auto;
@@ -441,7 +442,10 @@ nav button {
   background-color: rgb(105, 245, 175); /* Green background for update button */
   color: white; /* White text color */
 }
-
+.enroll-button{
+  background-color: rgb(84, 42, 168);
+  color: white;
+}
 /* Login styles */
 
 .login-container {

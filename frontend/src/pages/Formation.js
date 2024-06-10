@@ -28,19 +28,20 @@ const Formation = () => {
     };
 
     fetchFormations();
-  }, []);
+  }, [user]);
 
   return (
-    <div className="pages">
-      <div className="formations">
-        {formations && formations.map((formation) => (
-          <FormationDetails key={formation._id} formation={formation} />
-        ))}
+      <div className="pages">
+        <div className="formations">
+          {formations && formations
+              .filter(formation => !formation.users.includes(user?.user?._id))
+              .map((formation) => (
+                  <FormationDetails  key={formation._id} formation={formation} />
+              ))}
+        </div>
+        <FormationForm />
       </div>
-      <FormationForm />
-    </div>
   );
 };
-
 
 export default Formation;
