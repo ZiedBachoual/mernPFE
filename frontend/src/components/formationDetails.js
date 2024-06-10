@@ -2,11 +2,15 @@ import React, {useEffect, useState} from "react";
 import {useFormationsContext} from '../hooks/useFormationsContext';
 import {useAuthContext} from '../hooks/useAuthContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const {dispatch} = useFormationsContext();
     const {user} = useAuthContext();
-
+    const navigate = useNavigate();
+    const handleUserClick = (userId) => {
+        navigate(`/usersformations/${userId}`);
+    };
     const handleClick = async () => {
         if (!user) {
             return;
@@ -132,7 +136,7 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
             <p><strong>Duree: </strong>{formation.duree} hours</p>
             <p><strong> Date Début : </strong>{new Date(formation.datedebut).toLocaleDateString()}</p>
             <p><strong>Date Fin: </strong>{new Date(formation.datefin).toLocaleDateString()}</p>
-            <div className="actions">
+            <div>
                 <div className="delete-button" onClick={handleClick}>Supprimer</div>
                 <div className="update-button">Modifier</div>
                 {user.role == 'user' && (<div className="enroll-button" onClick={() => {
@@ -142,7 +146,8 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
                         enrollCourse(formation._id)
                     }
                 }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
-                {user.role == 'admin' && !formateur && (<select value={formation.formateurs[0]}
+                {user.role == 'admin' && (<div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les etudiants</div>)}
+                {user.role == 'admin' && !formateur && (<select style={{width:'95%'}} value={formation.formateurs[0]}
                                                                 onChange={(e) => addFormateur(e.target.value, formation._id)}>
                     <option value="">Choisir un formateur</option>
                     {formateurs.map((formateur) => (
