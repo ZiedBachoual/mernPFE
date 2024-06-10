@@ -30,6 +30,7 @@ const formationSchema = new Schema({
             ref: 'Formateur',
             required: true
         }],
+        seances: [{ type: Schema.Types.ObjectId, ref: 'Seance', required: false }]
     },
     { timestamps: true });
 

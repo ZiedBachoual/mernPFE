@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const formationRoutes = require('./routes/formations');
 const categorieRoutes = require('./routes/categorie');
+const seanceRoutes = require('./routes/seance');
 const userRoutes = require('./routes/user');
 const formateurRoutes = require('./routes/formateur'); 
 
@@ -22,6 +23,7 @@ app.use('/api/formateur', formateurRoutes);
 app.use('/api/formation', formationRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/categorie', categorieRoutes);
+app.use('/api/seance', seanceRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
