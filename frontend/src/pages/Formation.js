@@ -57,7 +57,7 @@ const Formation = () => {
                   <FormationDetails  key={formation._id} formation={formation} formateurs={formateurs} />
               ))}
         </div>
-        <FormationForm />
+        {user.role == 'admin' && (<FormationForm/>)}
       </div>
   );
 };

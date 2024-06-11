@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useFormationsContext} from '../hooks/useFormationsContext';
 import {useAuthContext} from '../hooks/useAuthContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { useParams, useNavigate } from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 
 const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const {dispatch} = useFormationsContext();
@@ -11,7 +11,7 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const handleUserClick = (formationId) => {
         navigate(`/usersformations/${formationId}`);
     };
-    const handleSeancesClick =(formationId)=>{
+    const handleSeancesClick = (formationId) => {
         navigate(`/listseances/${formationId}`);
     }
     const handleClick = async () => {
@@ -149,9 +149,13 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
                         enrollCourse(formation._id)
                     }
                 }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
-                {user.role == 'admin' && (<div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les seances</div>)}
-                {user.role == 'admin' && (<div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les etudiants</div>)}
-                {user.role == 'admin' && !formateur && (<select style={{width:'95%'}} value={formation.formateurs[0]}
+                {(user.role == 'admin' || (user.role == undefined && user.token)) && (
+                    <div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les
+                        seances</div>)}
+                {user.role == 'admin' && (
+                    <div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les
+                        etudiants</div>)}
+                {user.role == 'admin' && !formateur && (<select style={{width: '95%'}} value={formation.formateurs[0]}
                                                                 onChange={(e) => addFormateur(e.target.value, formation._id)}>
                     <option value="">Choisir un formateur</option>
                     {formateurs.map((formateur) => (
