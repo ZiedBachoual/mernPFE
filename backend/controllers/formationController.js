@@ -154,7 +154,6 @@ const deleteformation = async (req, res) => {
 }
 
 
-// update a formation
 const updateformation = async (req, res) => {
   const { id } = req.params
 
@@ -162,7 +161,7 @@ const updateformation = async (req, res) => {
     return res.status(404).json({error: 'No such formation'})
   }
 
-  const formation = await formation.findOneAndUpdate({_id: id}, {
+  const formation = await Formation.findOneAndUpdate({_id: id}, {
     ...req.body
   })
 

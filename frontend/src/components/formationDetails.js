@@ -8,6 +8,46 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     const {dispatch} = useFormationsContext();
     const {user} = useAuthContext();
     const navigate = useNavigate();
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedFormation, setEditedFormation] = useState({
+        title: formation.title,
+        duree: formation.duree,
+        datedebut: formation.datedebut,
+        datefin: formation.datefin
+    });
+
+    const handleEditChange = (e) => {
+        const {name, value} = e.target;
+        setEditedFormation(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleEditConfirm = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/formation/formations/${formation._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(editedFormation)
+            });
+            const json = await response.json();
+
+            if (response.ok) {
+                dispatch({type: 'UPDATE_FORMATION', payload: json});
+                setIsEditing(false);
+                alert('Formation updated successfully!');
+                window.location.reload();
+            } else {
+                alert('Failed to update formation.');
+            }
+        } catch (error) {
+            console.error("Error updating formation:", error);
+        }
+    };
     const handleUserClick = (formationId) => {
         navigate(`/usersformations/${formationId}`);
     };
@@ -134,47 +174,79 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
     };
     return (
         <div className="formation-card">
-            <h4>{formation.title}</h4>
-            <p><strong>Categorie: </strong>{formation.categorie}</p>
-            <p><strong>Duree: </strong>{formation.duree} hours</p>
-            <p><strong> Date Début : </strong>{new Date(formation.datedebut).toLocaleDateString()}</p>
-            <p><strong>Date Fin: </strong>{new Date(formation.datefin).toLocaleDateString()}</p>
-            <div>
-                <div className="delete-button" onClick={handleClick}>Supprimer</div>
-                <div className="update-button">Modifier</div>
-                {user.role == 'user' && (<div className="enroll-button" onClick={() => {
-                    if (isRolled) {
-                        unerollCourse(formation._id)
-                    } else {
-                        enrollCourse(formation._id)
-                    }
-                }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
-                {(user.role == undefined && user?.token) && (<div className="enroll-button" onClick={() => {
-                    if (isRolled) {
-                        deleteFormateur(user?.formateur._id, formation._id)
-                    } else {
-                        addFormateur(user?.formateur._id, formation._id)
-                    }
-                }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
-                {(user.role == 'admin' || (user.role == undefined && user.token)) && (
-                    <div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les
-                        seances</div>)}
-                {user.role == 'admin' && (
-                    <div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les
-                        etudiants</div>)}
-                {user.role == 'admin' && !formateur && (<select style={{width: '95%'}} value={formation.formateurs[0]}
-                                                                onChange={(e) => addFormateur(e.target.value, formation._id)}>
-                    <option value="">Choisir un formateur</option>
-                    {formateurs?.map((formateur) => (
-                        <option key={formateur._id} value={formateur._id}>
-                            {`${formateur.firstName} ${formateur.lastName}`}
-                        </option>
-                    ))}
-                </select>)}
-                {user.role == 'admin' && formateur && (<div className="enroll-button" onClick={() => {
-                    deleteFormateur(formateur, formation._id)
-                }}>quitter</div>)}
-            </div>
+            {!isEditing ? <> <h4>{formation.title}</h4>
+                    <p><strong>Categorie: </strong>{formation.categorie}</p>
+                    <p><strong>Duree: </strong>{formation.duree} hours</p>
+                    <p><strong> Date Début : </strong>{new Date(formation.datedebut).toLocaleDateString()}</p>
+                    <p><strong>Date Fin: </strong>{new Date(formation.datefin).toLocaleDateString()}</p>
+                    <div>
+                        {user.role == 'admin' && <div className="delete-button" onClick={handleClick}>Supprimer</div>}
+                        {user.role == 'admin' &&
+                            <div onClick={() => setIsEditing(true)} className="update-button">Modifier</div>}
+                        {user.role == 'user' && (<div className="enroll-button" onClick={() => {
+                            if (isRolled) {
+                                unerollCourse(formation._id)
+                            } else {
+                                enrollCourse(formation._id)
+                            }
+                        }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
+                        {(user.role == undefined && user?.token) && (<div className="enroll-button" onClick={() => {
+                            if (isRolled) {
+                                deleteFormateur(user?.formateur._id, formation._id)
+                            } else {
+                                addFormateur(user?.formateur._id, formation._id)
+                            }
+                        }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
+                        {(user.role == 'admin' || (user.role == undefined && user.token)) && (
+                            <div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les
+                                seances</div>)}
+                        {user.role == 'admin' && (
+                            <div className="enroll-button" onClick={() => handleUserClick(formation._id)}>Afficher les
+                                etudiants</div>)}
+                        {user.role == 'admin' && !formateur && (
+                            <select style={{width: '95%'}} value={formation.formateurs[0]}
+                                    onChange={(e) => addFormateur(e.target.value, formation._id)}>
+                                <option value="">Choisir un formateur</option>
+                                {formateurs?.map((formateur) => (
+                                    <option key={formateur._id} value={formateur._id}>
+                                        {`${formateur.firstName} ${formateur.lastName}`}
+                                    </option>
+                                ))}
+                            </select>)}
+                        {user.role == 'admin' && formateur && (<div className="enroll-button" onClick={() => {
+                            deleteFormateur(formateur, formation._id)
+                        }}>quitter</div>)}
+                    </div>
+                </> :
+                <>
+                    <input
+                        type="text"
+                        name="title"
+                        value={editedFormation.title}
+                        onChange={handleEditChange}
+                    />
+                    <input
+                        type="number"
+                        name="duree"
+                        value={editedFormation.duree}
+                        onChange={handleEditChange}
+                    />
+                    <input
+                        type="date"
+                        name="datedebut"
+                        value={editedFormation.datedebut}
+                        onChange={handleEditChange}
+                    />
+                    <input
+                        type="date"
+                        name="datefin"
+                        value={editedFormation.datefin}
+                        onChange={handleEditChange}
+                    />
+                    <button onClick={handleEditConfirm}>Confirmer</button>
+                    <button onClick={() => setIsEditing(false)}>Annuler</button>
+                </>
+            }
         </div>
     );
 };

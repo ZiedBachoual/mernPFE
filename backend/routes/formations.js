@@ -16,6 +16,7 @@ router.post('/inscrire', inscrireUser);
 router.post('/desinscrire', desinscrireUser);
 router.get('/user/:userId/formations', getUserFormations);
 router.get('/formation/:formationId/users', getFormationUsers);
+router.put('/formations/:id',updateformation); // Ajout de la route pour la mise à jour
 
 // require auth for all formations routes
 //router.use(requireAuth);
