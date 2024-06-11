@@ -47,7 +47,7 @@ const FormateurPage = () => {
         }
 
         try {
-            const response = await fetch(`/api/formateur/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/formateur/delete/${id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${user.token}`,
@@ -130,30 +130,33 @@ const FormateurPage = () => {
                 borderRadius: '10px'
             }}>
                 {formateurs.map((formateur, index) => (
-                    <Link to={`/formateursformations/${formateur._id}`} style={{
+                    <div style={{
                         width: 'calc(25% - 20px)',
                         padding: '15px',
                         backgroundColor: '#ffffff',
                         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                         borderRadius: '10px',
                         textAlign: 'center',
-                        textDecoration: 'none', color: 'inherit'
+
                     }}>
                         <div key={formateur._id}>
-                            <h4 style={{
-                                margin: '10px 0',
-                                fontSize: '1.2em',
-                                color: '#333'
-                            }}>{`${formateur.firstName} ${formateur.lastName}`}</h4>
-                            <p style={{margin: '5px 0', color: '#666'}}>
-                                <strong>Email: </strong>{formateur.email}
-                            </p>
-                            <p style={{margin: '5px 0', color: '#666'}}>
-                                <strong>Number: </strong>{formateur.number}
-                            </p>
-                            <p style={{margin: '5px 0', color: '#666'}}>
-                                <strong>Domain: </strong>{formateur.domain}
-                            </p>
+                            <Link to={`/formateursformations/${formateur._id}`}
+                                  style={{textDecoration: 'none', color: 'inherit'}}>
+                                <h4 style={{
+                                    margin: '10px 0',
+                                    fontSize: '1.2em',
+                                    color: '#333'
+                                }}>{`${formateur.firstName} ${formateur.lastName}`}</h4>
+                                <p style={{margin: '5px 0', color: '#666'}}>
+                                    <strong>Email: </strong>{formateur.email}
+                                </p>
+                                <p style={{margin: '5px 0', color: '#666'}}>
+                                    <strong>Number: </strong>{formateur.number}
+                                </p>
+                                <p style={{margin: '5px 0', color: '#666'}}>
+                                    <strong>Domain: </strong>{formateur.domain}
+                                </p>
+                            </Link>
                             <button style={{
                                 marginTop: '10px',
                                 padding: '10px 20px',
@@ -162,11 +165,14 @@ const FormateurPage = () => {
                                 border: 'none',
                                 borderRadius: '5px',
                                 cursor: 'pointer'
-                            }} onClick={() => handleDelete(formateur._id)}>
+                            }} onClick={(event) => {
+                                event.stopPropagation();
+                                handleDelete(formateur._id);
+                            }}>
                                 Delete
                             </button>
                         </div>
-                    </Link>
+                    </div>
                 ))}
             </div>
 

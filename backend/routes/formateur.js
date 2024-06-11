@@ -4,7 +4,7 @@ const path = require('path');
 const router = express.Router();
 
 // Import controller functions for Formateur
-const { loginFormateur, addFormateur, getAllFormateurs,removeFormateurFromFormation ,addFormateurToFormation} = require('../controllers/formateurController');
+const { loginFormateur, addFormateur, getAllFormateurs,removeFormateurFromFormation ,addFormateurToFormation,deleteFormateurById} = require('../controllers/formateurController');
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, '../uploads/cv');
@@ -33,5 +33,6 @@ router.get('/', getAllFormateurs);
 // Route pour ajouter / supprimer un formateur à une formation
 router.post('/addFormateurToFormation', addFormateurToFormation);
 router.post('/removeFormateur', removeFormateurFromFormation);
+router.delete('/delete/:id', deleteFormateurById);
 
 module.exports = router;

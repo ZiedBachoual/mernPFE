@@ -163,10 +163,24 @@ const removeFormateurFromFormation = async (req, res) => {
     }
 };
 
+const deleteFormateurById = async (req, res) => {
+    const formateurId = req.params.id;
+
+    try {
+        const formateur = await Formateur.findByIdAndDelete(formateurId);
+        if (!formateur) {
+            return res.status(404).json({ error: 'Formateur not found' });
+        }
+        res.status(200).json({ message: 'Formateur deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 module.exports = {
     addFormateur,
     loginFormateur,
     getAllFormateurs,
     removeFormateurFromFormation,
-    addFormateurToFormation
+    addFormateurToFormation,
+    deleteFormateurById
 };
