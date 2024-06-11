@@ -77,7 +77,7 @@ const loginFormateur = async (req, res) => {
         console.log('Login successful, token created:', token);
 
         // Return the formateur's email and token
-        res.status(200).json({email: formateur.email, token});
+        res.status(200).json({email: formateur.email, token,formateur});
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({error: 'Internal server error'});

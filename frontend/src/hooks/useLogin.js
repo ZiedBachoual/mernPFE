@@ -39,7 +39,7 @@ export const useLogin = () => {
       } else if (res.role === 'admin') {
         navigate('/'); // Redirect admin to home
       } else {
-        navigate('/formateur'); // Redirect to formateur dashboard
+        navigate('/formations'); // Redirect to formateur dashboard
       }
     } catch (error) {
       setIsLoading(false);

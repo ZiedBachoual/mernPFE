@@ -1,14 +1,17 @@
 import {Link} from 'react-router-dom';
 import {useLogout} from '../hooks/useLogout';
 import {useAuthContext} from '../hooks/useAuthContext';
+import {useParams, useNavigate} from 'react-router-dom';
 
 
 const Navbar = () => {
     const {logout} = useLogout();
     const {user} = useAuthContext();
+    const navigate = useNavigate();
 
     const handleClick = () => {
         logout();
+        navigate(`/login`);
     };
 
     return (
@@ -30,7 +33,7 @@ const Navbar = () => {
                 <Link to="/formations">
                     <h3>Formations</h3>
                 </Link>
-                {user?.role !== 'admin' &&
+                {(user?.role !== 'admin' && user?.token) &&
                     <Link to="/myformations">
                         <h3>Mes Formations</h3>
                     </Link>

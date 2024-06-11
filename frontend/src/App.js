@@ -36,7 +36,7 @@ const routes = [
   { path: "/signup", guarded: false, userType: "user", element: <Signup /> },
   { path: "/", guarded: true, userType: "user", element: <Home /> },
   { path: "/profile", guarded: true, userType: "user", element: <Profile /> },
-  { path: "/myformations", guarded: true, userType: "user", element: <Mesformations /> },
+  { path: "/myformations", guarded: false, userType: "user", element: <Mesformations /> },
   { path: "/request-password-reset", guarded: false, userType: "user", element: <RequestReset /> },
   { path: "/reset-password/:token", guarded: false, userType: "user", element: <ResetPassword /> },
 

@@ -149,6 +149,13 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
                         enrollCourse(formation._id)
                     }
                 }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
+                {(user.role == undefined && user?.token) && (<div className="enroll-button" onClick={() => {
+                    if (isRolled) {
+                        deleteFormateur(user?.formateur._id, formation._id)
+                    } else {
+                        addFormateur(user?.formateur._id, formation._id)
+                    }
+                }}>{isRolled ? 'quitter' : 'Rejoindre'}</div>)}
                 {(user.role == 'admin' || (user.role == undefined && user.token)) && (
                     <div className="enroll-button" onClick={() => handleSeancesClick(formation._id)}>Afficher les
                         seances</div>)}
@@ -158,7 +165,7 @@ const FormationDetails = ({formation, isRolled, formateurs, formateur}) => {
                 {user.role == 'admin' && !formateur && (<select style={{width: '95%'}} value={formation.formateurs[0]}
                                                                 onChange={(e) => addFormateur(e.target.value, formation._id)}>
                     <option value="">Choisir un formateur</option>
-                    {formateurs.map((formateur) => (
+                    {formateurs?.map((formateur) => (
                         <option key={formateur._id} value={formateur._id}>
                             {`${formateur.firstName} ${formateur.lastName}`}
                         </option>
