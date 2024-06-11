@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthContext } from './hooks/useAuthContext';
+import { useAuthContext } from './context/AuthContext';
 import { CategoriesContextProvider } from './context/CategoriesContext';
 
 // pages & components
@@ -51,7 +51,7 @@ const routes = [
 ];
 
 function App() {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
 
   const renderRoutes = (user) => {
     return routes.map(({ path, guarded, userType, element }) => {
@@ -67,19 +67,23 @@ function App() {
     });
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <CategoriesContextProvider>
-          <Navbar />
-          <div className="pages">
-            <Routes>
-              {renderRoutes(user)}
-            </Routes>
-          </div>
-        </CategoriesContextProvider>
-      </BrowserRouter>
-    </div>
+      <div className="App">
+        <BrowserRouter>
+          <CategoriesContextProvider>
+            <Navbar />
+            <div className="pages">
+              <Routes>
+                {renderRoutes(user)}
+              </Routes>
+            </div>
+          </CategoriesContextProvider>
+        </BrowserRouter>
+      </div>
   );
 }
 
